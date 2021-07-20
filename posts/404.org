@@ -1,0 +1,6 @@
+#+TITLE: Not found
+#+SUBTITLE:
+
+This page is not found.
+
+Return back to [[/][index]].

@@ -1,0 +1,23 @@
+#+TITLE: Use Zsh In Emacs
+#+DATE: [2017-11-09 Thu 21:55]
+#+CREATED:  [2017-10-31 Tue 16:27]
+#+ID: 2017-10-31-use-zsh-in-emacs
+#+FILETAGS: :shell:zsh:emacs:
+
+I used to use vim with tmux in a terminal emulator. After changing to emacs. It didn't take much time for me to realize that emacs in GUI works better.
+
+The problem is I still want the old behavior. I tried about three times using my zsh shell in emacs. I'm not here telling those failed attempts. I want to write it down because of a recent discovery.
+
+When I restructure my zsh configurations, I find the z-shell works fine with with zero config. That's when I finally discover that it's the plugins and configurations that make zsh and emacs incompatible. What's more, I find these lines. They must come from some emacs package's readme instruction. The original one is telling zsh don't do something when it's in emacs.
+
+#+BEGIN_SRC shell
+  if [ -n "$INSIDE_EMACS" ]; then
+    ...
+  else
+    ...
+  fi
+#+END_SRC
+
+So I thought, I can just use these line with my zsh configuration([[https://github.com/sorin-ionescu/prezto][prezto]]). It works fine now after some little test. It turns out the default [[https://github.com/zsh-users/zsh-completions][zsh-autocompletion]] is not playing well with emacs. I use the ~if...else~ code telling zsh don't load autosugestion while in emacs. And everything is fine now.
+
+That's it. Maybe I'll dig in for getting autocompletion back in emacs someday.

@@ -1,0 +1,56 @@
+#+TITLE: Use Emacs With Home Row
+#+DATE: [2019-01-15 Tue 11:54]
+#+ID: 2019-01-15-use-emacs-with-home-row
+#+CREATED: <2019-01-15 Tue 11:19>
+#+FILETAGS: :goku:macos:karabiner:emacs:
+
+After writing about [[http://yqrashawn.com/2018/09/26/switch-buffer-in-emacs/][switching buffers in emacs]] last year. I keep looking for the way to switch buffer quicker and more comfortably. I mentioned the package [[https://github.com/manateelazycat/awesome-tab][awesome-tab]] in that post and I'm still using it.
+
+The package shows buffers as tabs in emacs [[http://www.gnu.org/s/emacs/manual/html_node/elisp/Header-Lines.html][header line]], and provides functions to switch to next/prev, first/last tab. It also groups buffers depends on project and major-mode.
+
+I write a [[https://github.com/yqrashawn/awesome-tab][patch]] for the package to add function to jump to specifc tab recently. So that user can jump to specific tabs with different shortcuts.
+
+I also write a [[https://github.com/company-mode/company-mode/pull/859][patch]] for [[https://github.com/company-mode/company-mode][company-mode]] to customize the company candidate numbers when ~company-show-numbers~ is set to t.
+
+Now I can use the home row the way I want in emacs. Check the screenshot below.
+
+#+attr_html: :alt use emacs with home row image :align center :width 800
+[[file:../content/2019/01/15/emacs-home-row.png]]
+
+As you can see in the picture, instead of numbers, there're "asdf" for both tabs and completion candidates. Next step is to switch/select tabs/candidates with home row shortcuts.
+
+#+begin_src clojure
+  {:des "Emacs m/v select company candidates"
+   :rules [:emacs-m-mode
+           [:a [:!Tx :!T6 :1]]
+           [:s [:!Tx :!T6 :2]]
+           [:d [:!Tx :!T6 :3]]
+           [:f [:!Tx :!T6 :4]]
+           [:g [:!Tx :!T6 :5]]
+           :emacs-v-mode
+           [:h [:!Tx :!T6 :6]]
+           [:j [:!Tx :!T6 :7]]
+           [:k [:!Tx :!T6 :8]]
+           [:l [:!Tx :!T6 :9]]
+           [:semicolon [:!Tx :!T6 :0]]]}
+#+end_src
+
+Above code uses [[https://github.com/yqrashawn/GokuRakuJoudo][goku]] and [[https://github.com/tekezo/Karabiner-Elements][karabiner]] to map ~m+asdfg~ and ~v+hjkl;~ to ~C-x C-6 1234567890~. That's ~'m' key down then click 'a'~ to ~C-x C-6 1~ in emacs. Then I map ~C-x C-6~ + numbers to functions that switch/select tabs/candidates in emacs.
+
+#+begin_src elisp
+  ;; jump to specific in emacs
+  (define-key awesome-tab-mode-map (kbd "C-x C-6 1") (lambda () (interactive) (awesome-tab-jump ?a)))
+  (define-key awesome-tab-mode-map (kbd "C-x C-6 2") (lambda () (interactive) (awesome-tab-jump ?s)))
+  (define-key awesome-tab-mode-map (kbd "C-x C-6 3") (lambda () (interactive) (awesome-tab-jump ?d)))
+
+  ;; select specific candidates in company-active-map
+  (define-key company-active-map (kbd "C-x C-6 1") (kbd "M-1"))
+  (define-key company-active-map (kbd "C-x C-6 2") (kbd "M-2"))
+  (define-key company-active-map (kbd "C-x C-6 3") (kbd "M-3"))
+#+end_src
+
+We can use magic now!
+
+'ma' switch to first tab. 'mg' select 5th candidates when completing stuff.
+
+You can find above code in my [[https://github.com/yqrashawn/yqdotfiles/blob/master/.config/karabiner.edn][goku config]] and [[https://github.com/yqrashawn/.emacs.d][.emacs.d]].

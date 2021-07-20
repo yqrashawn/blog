@@ -1,0 +1,21 @@
+#+TITLE: My Karabiner Elements Configuration
+#+DATE: [2018-09-19 Wed 08:52]
+#+CREATED: [2017-10-29 Sun 17:01]
+#+ID: 2017-10-29-my-karabiner-configuration
+#+FILETAGS: :coding:tool:efficient:karabiner:
+
+UPDATE 2018-09-19 Wed
+
+My config in [[https://github.com/pqrs-org/KE-complex_modifications][KE-complex-modifications]] is outdated. I'm now using [[https://github.com/yqrashawn/GokuRakuJoudo][GokuRakuJoudo]] to config karabiner. It enables user to write the configuration in a much more compact karabiner.edn file, you can check out [[https://github.com/yqrashawn/yqdotfiles/blob/master/.config/karabiner.edn][mine]].  I'll write a post about it soon. If your karabiner.json is bloated, you may want to try it. Recommend to check the [[https://github.com/yqrashawn/GokuRakuJoudo/blob/master/Tutorial.org][tutorial]] first.
+
+ORIGINAL
+
+This post are descriptions and tutorial of my [[https://github.com/yqrashawn/yqdotfiles/blob/master/.config/karabiner/karabiner.json][personal KE complex modification]].
+
+I [[https://github.com/pqrs-org/KE-complex_modifications/pull/162][merged]] my personal [[https://github.com/tekezo/Karabiner-Elements][Karabiner Elements]] configuration into the [[https://github.com/pqrs-org/KE-complex_modifications][official repo]] several days ago. You can import my personal rules [[https://pqrs-org.github.io/KE-complex_modifications/][here]]. To achieve efficiency, I use karabiner with [[https://www.alfredapp.com/][Alfred]] mainly through [[https://www.alfredapp.com/help/workflows/triggers/external/][alfred workflow external trigger]] and [[https://developer.apple.com/legacy/library/documentation/Darwin/Reference/ManPages/man1/osascript.1.html][osascript]] (command line tool for calling AppleScript code).
+
+Here are these configurations. Please note that I update my configurations every day. So I  can't keep this post up to date. The key here is to introduce a system for launching apps, invoking scripts and all stuffs that can be done with shell (everything). When you can get anything you want with few key strokes, *it feels great*.
+
++[[https://www.dropbox.com/s/qepdfdu0djyed7v/workflows.zip?dl=0][Download all my workflow from dropbox ]], please contact [[https://github.com/yqrashawn][me]] when this link broken.+ I may update this post for each specific config if I have time in the future (may not happen). If you have any problems or ideas, please [[https://github.com/yqrashawn/yqdotfiles/issues/new][open an issue]] in my dotfile repo. And you can also check [[https://github.com/pqrs-org/KE-complex_modifications][KE-complex_modifications]] official repo for more rules and discussion.
+
+Update: The old download link is broken and I don't have time to maintain all these workflows up to date. Now that the core thing here is to use alfred workflow's external trigger feature, I create a [[https://github.com/yqrashawn/alfred-launcher-workflow][app launcher workflow]] as a sample.
