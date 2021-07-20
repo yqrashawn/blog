@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2021-07-20 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Org Agenda Bitbar Plugin</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="yqrashawn">
+<link rel="icon" type="image/x-icon" href="https://yqrashawn.com/favicon.ico">
+<link rel="alternate" type="application/rss+xml" href="rss.xml" title="RSS feed">
+<meta property="og:title" content="Org Agenda Bitbar Plugin">
+<meta property="og:url" content="https://yqrashawn.com/org-agenda-bitbar-plugin.html">
+
+<meta property="og:type" content="article">
+<meta property="article:author" content="yqrashawn">
+<meta property="article:published_time" content="2021-07-20T16:23:27+0000">
+<meta property="twitter:title" content="Org Agenda Bitbar Plugin">
+<meta property="twitter:url" content="https://yqrashawn.com/org-agenda-bitbar-plugin.html">
+<meta property="twitter:image" content="https://yqrashawn.com/">
+<link rel="stylesheet" href="css/style.css" type="text/css">
+</head>
+<body>
+<header id="top" class="status">
+<section>
+  <h1><a href="/" title="infin">infin</a></h1>
+  <h2><a href="https://github.com/yqrashawn" title="github:yqrashawn" target="_blank" rel="noreferrer noopener">github:yqrashawn</a></h2>
+</section>
+</header>
+<main id="content">
+<header>
+<h1 class="title">Org Agenda Bitbar Plugin</h1>
+<p class="subtitle">posted on 2021-07-20</p>
+</header><p>
+UPDATE: The agenda plugin has been merged into the official plugin repo. You can now find the plugin <a href="https://getbitbar.com/plugins/Lifestyle/org-agenda.30m.rb">here</a>.
+</p>
+
+<p>
+<a href="https://github.com/matryer/bitbar">Bitbar</a> is a macos application that can add custom menu bar buttons. I&rsquo;m recently learning managing projects with org-mode. And we all know that org-agenda is great.
+</p>
+
+<p>
+So I write a bitbar plugin, <a href="https://github.com/yqrashawn/bitbar-plugin-agenda">agenda</a> to display some of my agenda in menu bar.
+</p>
+
+<hr>
+
+<section id="outline-container-orgae0950c" class="outline-2">
+<h2 id="orgae0950c"><a href="#orgae0950c">feature</a></h2>
+<div class="outline-text-2" id="text-orgae0950c">
+<p>
+It can display your chosen org-agenda-custom-commands in menu bar.
+Support customize color for priority.
+Support different color for filter.
+Make item with links clickable(only support http/https url).
+</p>
+
+<p>
+Like this.
+</p>
+
+
+<figure id="orgb8227e0">
+<img src="../content/2017/11/25/bitbar-ext-org-agenda.png" alt="bitbar agenda plugin image" align="center" width="500">
+
+</figure>
+</div>
+</section>
+
+<section id="outline-container-org2ee2f8a" class="outline-2">
+<h2 id="org2ee2f8a"><a href="#org2ee2f8a">usage</a></h2>
+<div class="outline-text-2" id="text-org2ee2f8a">
+<p>
+User need to specify the command to export the agenda-view to txt file.
+</p>
+
+<p>
+I&rsquo;m using emacs <a href="https://www.emacswiki.org/emacs/BatchMode">&#x2013;batch</a> feature to generate the txt file silently. There may better way for doing this, like <code>org-batch-agenda</code> (<a href="http://orgmode.org/manual/Extracting-agenda-information.html">check out here</a>). But when my emacs configuration piles up, there&rsquo;s lots of initializing message which makes it hard to extract the agenda-view data. So I just use the <code>org-agenda-write</code> command to write agenda-view to disk.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell">emacs --batch -l ~/.emacs.d/init.el --eval <span class="org-string">"(run-hooks 'emacs-startup-hook)"</span> <span class="org-sh-escaped-newline">\</span>
+      --eval <span class="org-string">'(progn (org-agenda nil "r") (org-agenda-write "~/agendas/work/todos.txt") (spacemacs/kill-emacs))'</span>
+</pre>
+</div>
+
+<p>
+Note: for <a href="https://github.com/syl20bnr/spacemacs">spacemacs</a> user, you need to add <code>(run-hooks 'emacs-startup-hook)</code> to let emacs read your  <code>dotspacemacs/user-config</code> (<a href="https://github.com/syl20bnr/spacemacs/issues/4504">issue#4504</a>). Or you can extract your org-agenda configuration into a seperate file and <code>--eval</code> it alone.
+</p>
+
+<p>
+For using this plugin. You need to specify <code>agenda_directory</code> <code>agenda_file_name</code>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-ruby"><span class="org-comment-delimiter"># </span><span class="org-comment">Change to your todo directory path</span>
+agenda_directory = <span class="org-string">"</span><span class="org-variable-name">#{Dir.home}</span><span class="org-string">/agendas/work/"</span>
+agenda_name = <span class="org-string">'todos.txt'</span>
+</pre>
+</div>
+
+<p>
+And also the agenda custom command key, you may in your configuration file, you can find your setting using <code>(describe-variable 'org-agenda-custom-commands)</code>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-ruby"><span class="org-comment-delimiter"># </span><span class="org-comment">the agenda custome command which brings the agenda view that you want to export</span>
+agenda_custome_command = <span class="org-string">'B'</span>
+</pre>
+</div>
+
+<p>
+The problem of using <code>--batch</code> is to <a href="https://emacs.stackexchange.com/questions/5451/how-do-i-force-kill-emacs/5456">really kill emacs</a>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-ruby"><span class="org-comment-delimiter"># </span><span class="org-comment">function to REALLY kill emacs</span>
+<span class="org-comment-delimiter"># </span><span class="org-comment">for spacemacs user use (spacemacs/kill-emacs)</span>
+<span class="org-comment-delimiter"># </span><span class="org-comment">kill_emacs_function = '(spacemacs/kill-emacs)'</span>
+kill_emacs_function = <span class="org-string">'(let (kill-emacs-hook) (kill-emacs))'</span>
+</pre>
+</div>
+
+<p>
+You can also change colors of filter line and lines with priority.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-ruby"><span class="org-comment-delimiter"># </span><span class="org-comment">Change priority color here</span>
+tag_color = <span class="org-string">'orange'</span>
+
+<span class="org-comment-delimiter"># </span><span class="org-comment">Customise label color-code here (these colors are optimised for a dark theme menubar)</span>
+labels = {
+  <span class="org-string">'[#A]'</span> =&gt; <span class="org-string">'red'</span>,
+  <span class="org-string">'[#B]'</span> =&gt; <span class="org-string">'yellow'</span>,
+  <span class="org-string">'[#C]'</span> =&gt; <span class="org-string">'violet'</span>
+}
+</pre>
+</div>
+
+<p>
+If you use pacakges that will change filters&rsquo; format in agenda view, you need to specify  <code>tag_indicator</code> .
+</p>
+
+<div class="org-src-container">
+<pre class="src src-ruby">tag_indicator = <span class="org-string">'Headlines with TAGS match: '</span>
+</pre>
+</div>
+</div>
+</section>
+
+<section id="outline-container-org71f02d6" class="outline-2">
+<h2 id="org71f02d6"><a href="#org71f02d6">limitation</a></h2>
+<div class="outline-text-2" id="text-org71f02d6">
+<p>
+Current version don&rsquo;t support <code>agenda-view</code> when you add, say you add the below code in the chosen <code>org-agenda-custom-commands</code>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp">(agenda ((org-agenda-ndays 7)))
+</pre>
+</div>
+</div>
+</section>
+</main>
+<footer id="postamble" class="status">
+<section>
+  <h3>Search</h3>
+  <iframe class="search-box" src="https://duckduckgo.com/search.html?site=yqrashawn.com&prefill=search"></iframe>
+</section>
+<section>
+  <h3>Meta</h3>
+  <ul>
+    <li><a href="rss.xml">RSS feed</a></li>
+    <li><a href="https://github.com/yqrashawn/blog">View source code</a></li>
+  </ul>
+</section>
+<section>
+  <h3>About</h3>
+  <ul>
+    <li>Author: <a href="http://github.com/yqrashawn">yqrashawn</a></li>
+    <!-- <li>Twitter: <a href="http://twitter.com/yqrashawn">@yqrashawn</a></li> -->
+  </ul>
+</section>
+</footer>
+</body>
+</html>

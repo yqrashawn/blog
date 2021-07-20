@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2021-07-20 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Emacs Workspace Management</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="yqrashawn">
+<link rel="icon" type="image/x-icon" href="https://yqrashawn.com/favicon.ico">
+<link rel="alternate" type="application/rss+xml" href="rss.xml" title="RSS feed">
+<meta property="og:title" content="Emacs Workspace Management">
+<meta property="og:url" content="https://yqrashawn.com/emacs-workspace-management.html">
+
+<meta property="og:type" content="article">
+<meta property="article:author" content="yqrashawn">
+<meta property="article:published_time" content="2018-08-07T16:46:00+0000">
+<meta property="twitter:title" content="Emacs Workspace Management">
+<meta property="twitter:url" content="https://yqrashawn.com/emacs-workspace-management.html">
+<meta property="twitter:image" content="https://yqrashawn.com/">
+<link rel="stylesheet" href="css/style.css" type="text/css">
+</head>
+<body>
+<header id="top" class="status">
+<section>
+  <h1><a href="/" title="infin">infin</a></h1>
+  <h2><a href="https://github.com/yqrashawn" title="github:yqrashawn" target="_blank" rel="noreferrer noopener">github:yqrashawn</a></h2>
+</section>
+</header>
+<main id="content">
+<header>
+<h1 class="title">Emacs Workspace Management</h1>
+<p class="subtitle">posted on 2018-08-07</p>
+</header><p>
+Recently I&rsquo;m asked to help on a project. The problem is there&rsquo;re a lot files with same name in different directories and same name with my other project. I&rsquo;m using <code>ivy-switch-buffer</code> to switch between opened buffer. And it needs more keystrokes in this project to switch to the desired buffer. So I&rsquo;m looking for some workspace management aproch in emacs to make my finger not that tired after work.
+</p>
+
+<p>
+After googling for a little while, I find there are so many ways to manage workspace in emacs.
+</p>
+<ul class="org-ul">
+<li>use session: <a href="https://www.emacswiki.org/emacs/Desktop#toc6">use desktop and bookmark+</a></li>
+<li>use multiple emacs instance</li>
+<li><code>persp-mode</code></li>
+<li><code>purpose-mode</code> <code>frame-purpose-mode</code></li>
+<li>also there&rsquo;s <code>ibuffer</code> with <code>ibuffer-vc</code> or <code>ibuffer-projectile</code></li>
+<li>even <code>tabbar</code> with custom filter functions</li>
+</ul>
+
+
+<p>
+The cons of the first two is that you need to deliberately switch workspace when you are going to open files in other workspace. The pros is that they provide perfect isolation, no need to tweak buffer switch functions.
+</p>
+
+<p>
+For <code>persp-mode</code>, the pros is that with custom code, maybe it&rsquo;s not hard to implement the workspace auto-switching function. It has eye candy in mode line or title bar if you want them. The cons is that you need to implement the auto-switching function or remember to switch workspace manually.
+</p>
+
+<p>
+For <code>purpose-mode</code>, you may need multiple high resolution screen.
+</p>
+
+<p>
+For <code>ibuffer</code>, it&rsquo;s not typically &ldquo;workspace&rdquo;. It depends on how many buffers you have and how familiar you are with the ibuffer filter functionality.
+</p>
+
+<p>
+For <code>tabbar</code>, eye candy and custom function is needed.
+</p>
+
+<p>
+So it really depends on
+</p>
+<ul class="org-ul">
+<li>your currently familiar workflow</li>
+<li>can you tolerate manually switch workspace</li>
+<li>if you can comfortably change your workflow</li>
+<li>how much isolation you want</li>
+<li>screen amount and size</li>
+</ul>
+
+
+<p>
+I may try <code>persp-mode</code> first. Wish me luck.</p>
+</main>
+<footer id="postamble" class="status">
+<section>
+  <h3>Search</h3>
+  <iframe class="search-box" src="https://duckduckgo.com/search.html?site=yqrashawn.com&prefill=search"></iframe>
+</section>
+<section>
+  <h3>Meta</h3>
+  <ul>
+    <li><a href="rss.xml">RSS feed</a></li>
+    <li><a href="https://github.com/yqrashawn/blog">View source code</a></li>
+  </ul>
+</section>
+<section>
+  <h3>About</h3>
+  <ul>
+    <li>Author: <a href="http://github.com/yqrashawn">yqrashawn</a></li>
+    <!-- <li>Twitter: <a href="http://twitter.com/yqrashawn">@yqrashawn</a></li> -->
+  </ul>
+</section>
+</footer>
+</body>
+</html>

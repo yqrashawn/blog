@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2021-07-20 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Switch Things Faster</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="yqrashawn">
+<link rel="icon" type="image/x-icon" href="https://yqrashawn.com/favicon.ico">
+<link rel="alternate" type="application/rss+xml" href="rss.xml" title="RSS feed">
+<meta property="og:title" content="Switch Things Faster">
+<meta property="og:url" content="https://yqrashawn.com/switch-things-faster.html">
+
+<meta property="og:type" content="article">
+<meta property="article:author" content="yqrashawn">
+<meta property="article:published_time" content="2018-10-03T02:30:00+0000">
+<meta property="twitter:title" content="Switch Things Faster">
+<meta property="twitter:url" content="https://yqrashawn.com/switch-things-faster.html">
+<meta property="twitter:image" content="https://yqrashawn.com/">
+<link rel="stylesheet" href="css/style.css" type="text/css">
+</head>
+<body>
+<header id="top" class="status">
+<section>
+  <h1><a href="/" title="infin">infin</a></h1>
+  <h2><a href="https://github.com/yqrashawn" title="github:yqrashawn" target="_blank" rel="noreferrer noopener">github:yqrashawn</a></h2>
+</section>
+</header>
+<main id="content">
+<header>
+<h1 class="title">Switch Things Faster</h1>
+<p class="subtitle">posted on 2018-10-03</p>
+</header><p>
+Talking about buffer switching in emacs in the <a href="http://yqrashawn.com/2018/09/26/switch-buffer-in-emacs/">last post</a> , I said that I have keybindings to switch between the two and three most recent used buffers. And the author of the <a href="https://www.reddit.com/r/emacs/comments/9hmh8n/whats_your_preferred_method_of_switching_buffers/">reddit post</a> chose to use <a href="https://github.com/killdash9/buffer-flip.el">buffer-flip</a> package.
+</p>
+
+<p>
+The buffer-flip package makes switching buffer like those switching applications behavior in operating system, like <code>alt-tab</code> in MS Windows and <code>command-tab</code> in macOS. VScode also can switch among opened files with <code>control-tab</code>. The problem of these methods are obvious. They can only switching in a specific order and they all bind to these uncomfortable keys.
+</p>
+
+<p>
+For me there&rsquo;re two solutions.
+</p>
+
+<section id="outline-container-orgd72e517" class="outline-2">
+<h2 id="orgd72e517"><a href="#orgd72e517">Search + shortcuts for recent visited item</a></h2>
+<div class="outline-text-2" id="text-orgd72e517">
+<p>
+I already talk about the first solution, switching with packages like <code>ivy</code> or <code>helm</code>, or <code>alfred</code> or <code>contexts</code> on macOS, which you can switching by searching. Plus two shortcuts switching between the most recent two and three item, so that we don&rsquo;t need to press too much to just switch to prev item.
+</p>
+</div>
+</section>
+
+<section id="outline-container-orgc129545" class="outline-2">
+<h2 id="orgc129545"><a href="#orgc129545">home-row shortcuts + smart trigger</a></h2>
+<div class="outline-text-2" id="text-orgc129545">
+<p>
+There&rsquo;s another solution. It&rsquo;s very similar to editing text in emacs. When I want to change a word in current line, I got to move my cursor to that word. If the word is in the beginning or end of this line, I use <code>C-a</code> or <code>C-e</code> then maybe <code>C-f</code>, <code>C-b</code> to move to that word (I actually use evil keybindings). If it&rsquo;s in the middle of the line, I use <code>isearch</code>, <code>swiper</code> or <code>evil-fine-char</code> to that word.
+</p>
+
+<p>
+It&rsquo;s the same when we switch buffer. Check the code first.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-elisp"><span class="org-comment-delimiter">;; </span><span class="org-comment">smart trigger function, if not in minibuffer, trigger ivy</span>
+<span class="org-comment-delimiter">;; </span><span class="org-comment">if in minibuffer, do ivy actions</span>
+<span class="org-comment-delimiter">;; </span><span class="org-comment">(there must be better way to identify if we are in ivy-switch-buffer context)</span>
+(<span class="org-keyword">defun</span> <span class="org-function-name">+ivy-switch-buffer-next-line</span> ()
+  (<span class="org-keyword">interactive</span>)
+  (<span class="org-keyword">if</span> (minibufferp) (ivy-next-line)
+    (ivy-switch-buffer)))
+
+(<span class="org-keyword">defun</span> <span class="org-function-name">+ivy-switch-buffer-prevouse-line</span> ()
+  (<span class="org-keyword">interactive</span>)
+  (<span class="org-keyword">if</span> (minibufferp) (ivy-previous-line)
+    (ivy-switch-buffer)))
+
+<span class="org-comment-delimiter">;; </span><span class="org-comment">then we bind them to some key</span>
+(global-set-key (kbd <span class="org-string">"C-x C-9 l"</span>) #'ivy-alt-done)
+(global-set-key (kbd <span class="org-string">"C-x C-9 j"</span>) '+ivy-switch-buffer-next-line)
+(global-set-key (kbd <span class="org-string">"C-x C-9 k"</span>) '+ivy-switch-buffer-prevouse-line)
+(global-set-key (kbd <span class="org-string">"C-x C-9 a"</span> ) #'ivy-beginning-of-buffer)
+(global-set-key (kbd <span class="org-string">"C-x C-9 e"</span> ) #'ivy-end-of-buffer)
+(global-set-key (kbd <span class="org-string">"C-x C-9 u"</span> ) #'ivy-scroll-down-command)
+(global-set-key (kbd <span class="org-string">"C-x C-9 d"</span> ) #'ivy-scroll-up-command)
+</pre>
+</div>
+
+<p>
+So this is unusable for now. Cause the keybindings are too hard and slow to reach. That&rsquo;s why we don&rsquo;t do these kind of configuration. We don&rsquo;t have enough key for this.
+</p>
+
+<p>
+But what if we can make any key a modifier key like <code>control</code>, <code>alt</code> or <code>command</code>. There&rsquo;s <a href="https://pqrs.org/osx/karabiner/">karabiner</a> on macOS can make this happen. And I think this is doable on other operating systems as well.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-clojure">{:applications {:Emacs ["^org\\.gnu\\.Emacs$"]} ;; let karabiner know which app is emacs
+ :simlayer {:emacs-s-mode {:key :s :condi :Emacs}} ;; use s as modifer key only in emacs
+ :mains [{:des "s-mode in emacs"
+	  :rules [:emacs-s-mode ;; bellow rebinds only works under :emacs-s-mode condition
+		  [:j [:!Tx :!T9 :j]] ;; ivy-next-line or ivy-switch-buffer
+		  [:k [:!Tx :!T9 :k]] ;; prev line
+		  [:l [:!Tx :!T9 :l]] ;; ivy-alt-done
+		  [:i [:!Tx :!T9 :a]] ;; top of ivy buffer
+		  [:o [:!Tx :!T9 :e]] ;; bottom
+		  [:o [:!Tx :!T9 :u]] ;; scroll up
+		  [:o [:!Tx :!T9 :d]]]}]}
+</pre>
+</div>
+
+<p>
+I have this <code>emacs-s-mode</code> use <code>s</code> key as a modifier key mapping <code>s+jklaeud</code> to <code>C-x C-9 jklaeud</code>. So when I want to switch buffer, I can just press <code>s+j/k</code> to trigger <code>ivy-switch-buffer</code> and keep pressing either of this key to find my buffer. Or use <code>s + u or d</code> to scroll quicker, <code>s+a/e</code> to go to the top and bottom of the list and <code>s+l</code> to select the buffer. I can always release <code>s</code> key and type to search the right buffer, without fearing releasing keys may select wrong buffer (happens when switching application with <code>command+tab</code>). And it won&rsquo;t switch to buffers between current one and target one making emacs rendering every buffer (buffer-flip behavior).
+</p>
+
+<p>
+Note that the karabiner configuration above needs <a href="https://github.com/yqrashawn/GokuRakuJoudo">GokuRakuJoudo</a> to convert to the json format that karabiner can read, you can&rsquo;t use it directly.
+</p>
+
+<p>
+If you know how to make normal keys as modifier key in other operating system, please let me know. I&rsquo;ll add them to this post.</p>
+</div>
+</section>
+</main>
+<footer id="postamble" class="status">
+<section>
+  <h3>Search</h3>
+  <iframe class="search-box" src="https://duckduckgo.com/search.html?site=yqrashawn.com&prefill=search"></iframe>
+</section>
+<section>
+  <h3>Meta</h3>
+  <ul>
+    <li><a href="rss.xml">RSS feed</a></li>
+    <li><a href="https://github.com/yqrashawn/blog">View source code</a></li>
+  </ul>
+</section>
+<section>
+  <h3>About</h3>
+  <ul>
+    <li>Author: <a href="http://github.com/yqrashawn">yqrashawn</a></li>
+    <!-- <li>Twitter: <a href="http://twitter.com/yqrashawn">@yqrashawn</a></li> -->
+  </ul>
+</section>
+</footer>
+</body>
+</html>

@@ -1,0 +1,606 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"
+     xmlns:content="http://purl.org/rss/1.0/modules/content/"
+     xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+     xmlns:dc="http://purl.org/dc/elements/1.1/"
+     xmlns:atom="http://www.w3.org/2005/Atom"
+     xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+     xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+     xmlns:georss="http://www.georss.org/georss"
+     xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+     xmlns:media="http://search.yahoo.com/mrss/"><channel>
+  <title>infin | yqrashawn.com</title>
+  <atom:link href="https://yqrashawn.com/rss.xml" rel="self" type="application/rss+xml" />
+  <link>https://yqrashawn.com/</link>
+  <description><![CDATA[]]></description>
+  <language>en</language>
+  <pubDate>Tue, 20 Jul 2021 16:23:34 +0000</pubDate>
+  <lastBuildDate>Tue, 20 Jul 2021 16:23:34 +0000</lastBuildDate>
+  <generator>Emacs 27.2 Org-mode 9.4.6</generator>
+  <webMaster> (yqrashawn)</webMaster>
+  <image>
+    <url>https://orgmode.org/img/org-mode-unicorn-logo.png</url>
+    <title>infin | yqrashawn.com</title>
+    <link>https://yqrashawn.com/</link>
+  </image>
+
+
+  <item>
+    <title>file:/home/runner/work/blog/blog/posts/org-agenda-bitbar-plugin.org</title>
+    <link>https://yqrashawn.com/org-agenda-bitbar-plugin.html</link>
+    <author> (yqrashawn)</author>
+    <guid isPermaLink="false">https://yqrashawn.com/org-agenda-bitbar-plugin.html</guid>
+    <pubDate>Tue, 20 Jul 2021 00:00:00 +0000</pubDate>
+
+    <description><![CDATA[<p>
+    UPDATE: The agenda plugin has been merged into the official plugin repo. You can now find the plugin <a href="https://getbitbar.com/plugins/Lifestyle/org-agenda.30m.rb">here</a>.
+    </p>
+
+    <p>
+    <a href="https://github.com/matryer/bitbar">Bitbar</a> is a macos application that can add custom menu bar buttons. I'm recently learning managing projects with org-mode. And we all know that org-agenda is great.
+    </p>
+
+    <p>
+    So I write a bitbar plugin, <a href="https://github.com/yqrashawn/bitbar-plugin-agenda">agenda</a> to display some of my agenda in menu bar.
+    </p>
+
+    <hr>
+
+    <p>
+    feature
+    It can display your chosen org-agenda-custom-commands in menu bar.
+    Support customize color for priority.
+    Support different color for filter.
+    Make item with links clickable(only support http/https url).
+    </p>
+
+    <p>
+    Like this.
+    </p>
+
+
+    <figure id="orgbeaa892">
+    <img src="../content/2017/11/25/bitbar-ext-org-agenda.png" alt="bitbar-ext-org-agenda.png">
+
+    </figure>
+
+    <p>
+    usage
+    User need to specify the command to export the agenda-view to txt file.
+    </p>
+
+    <p>
+    I'm using emacs <a href="https://www.emacswiki.org/emacs/BatchMode">--batch</a> feature to generate the txt file silently. There may better way for doing this, like <code>org-batch-agenda</code> (<a href="http://orgmode.org/manual/Extracting-agenda-information.html">check out here</a>). But when my emacs configuration piles up, there's lots of initializing message which makes it hard to extract the agenda-view data. So I just use the <code>org-agenda-write</code> command to write agenda-view to disk.
+    </p>
+
+    <div class="org-src-container">
+    <pre class="src src-shell">emacs --batch -l ~/.emacs.d/init.el --eval <span class="org-string">"(run-hooks 'emacs-startup-hook)"</span> <span class="org-sh-escaped-newline">\</span>
+    --eval <span class="org-string">'(progn (org-agenda nil "r") (org-agenda-write "~/agendas/work/todos.txt") (spacemacs/kill-emacs))'</span>
+    </pre>
+    </div>
+
+    <p>
+    Note: for <a href="https://github.com/syl20bnr/spacemacs">spacemacs</a> user, you need to add <code>(run-hooks 'emacs-startup-hook)</code> to let emacs read your  <code>dotspacemacs/user-config</code> (<a href="https://github.com/syl20bnr/spacemacs/issues/4504">issue#4504</a>). Or you can extract your org-agenda configuration into a seperate file and <code>--eval</code> it alone.
+    </p>
+
+    <p>
+    For using this plugin. You need to specify <code>agenda_directory</code> <code>agenda_file_name</code>.
+    </p>
+
+    <div class="org-src-container">
+    <pre class="src src-ruby"><span class="org-comment-delimiter"># </span><span class="org-comment">Change to your todo directory path</span>
+    agenda_directory = <span class="org-string">"</span><span class="org-variable-name">#{Dir.home}</span><span class="org-string">/agendas/work/"</span>
+    agenda_name = <span class="org-string">'todos.txt'</span>
+    </pre>
+    </div>
+
+    <p>
+    And also the agenda custom command key, you may in your configuration file, you can find your setting using <code>(describe-variable 'org-agenda-custom-commands)</code>.
+    </p>
+
+    <div class="org-src-container">
+    <pre class="src src-ruby"><span class="org-comment-delimiter"># </span><span class="org-comment">the agenda custome command which brings the agenda view that you want to export</span>
+    agenda_custome_command = <span class="org-string">'B'</span>
+    </pre>
+    </div>
+
+    <p>
+    The problem of using <code>--batch</code> is to <a href="https://emacs.stackexchange.com/questions/5451/how-do-i-force-kill-emacs/5456">really kill emacs</a>.
+    </p>
+
+    <div class="org-src-container">
+    <pre class="src src-ruby"><span class="org-comment-delimiter"># </span><span class="org-comment">function to REALLY kill emacs</span>
+    <span class="org-comment-delimiter"># </span><span class="org-comment">for spacemacs user use (spacemacs/kill-emacs)</span>
+    <span class="org-comment-delimiter"># </span><span class="org-comment">kill_emacs_function = '(spacemacs/kill-emacs)'</span>
+    kill_emacs_function = <span class="org-string">'(let (kill-emacs-hook) (kill-emacs))'</span>
+    </pre>
+    </div>
+
+    <p>
+    You can also change colors of filter line and lines with priority.
+    </p>
+
+    <div class="org-src-container">
+    <pre class="src src-ruby"><span class="org-comment-delimiter"># </span><span class="org-comment">Change priority color here</span>
+    tag_color = <span class="org-string">'orange'</span>
+
+    <span class="org-comment-delimiter"># </span><span class="org-comment">Customise label color-code here (these colors are optimised for a dark theme menubar)</span>
+    labels = {
+    <span class="org-string">'[#A]'</span> =&gt; <span class="org-string">'red'</span>,
+    <span class="org-string">'[#B]'</span> =&gt; <span class="org-string">'yellow'</span>,
+    <span class="org-string">'[#C]'</span> =&gt; <span class="org-string">'violet'</span>
+    }
+    </pre>
+    </div>
+
+    <p>
+    If you use pacakges that will change filters' format in agenda view, you need to specify  <code>tag_indicator</code> .
+    </p>
+
+    <div class="org-src-container">
+    <pre class="src src-ruby">tag_indicator = <span class="org-string">'Headlines with TAGS match: '</span>
+    </pre>
+    </div>
+
+    <p>
+    limitation
+    </p>
+
+    <p>
+    Current version don't support <code>agenda-view</code> when you add, say you add the below code in the chosen <code>org-agenda-custom-commands</code>.
+    </p>
+
+    <div class="org-src-container">
+    <pre class="src src-lisp">(agenda ((org-agenda-ndays 7)))
+    </pre>
+    </div>
+    ]]></description>
+</item>
+<item>
+  <title>file:/home/runner/work/blog/blog/posts/use-emacs-with-home-row.org</title>
+  <link>https://yqrashawn.com/use-emacs-with-home-row.html</link>
+  <author> (yqrashawn)</author>
+  <guid isPermaLink="false">https://yqrashawn.com/use-emacs-with-home-row.html</guid>
+  <pubDate>Tue, 15 Jan 2019 00:00:00 +0000</pubDate>
+
+  <description><![CDATA[<p>
+  After writing about <a href="http://yqrashawn.com/2018/09/26/switch-buffer-in-emacs/">switching buffers in emacs</a> last year. I keep looking for the way to switch buffer quicker and more comfortably. I mentioned the package <a href="https://github.com/manateelazycat/awesome-tab">awesome-tab</a> in that post and I'm still using it.
+  </p>
+
+  <p>
+  The package shows buffers as tabs in emacs <a href="http://www.gnu.org/s/emacs/manual/html_node/elisp/Header-Lines.html">header line</a>, and provides functions to switch to next/prev, first/last tab. It also groups buffers depends on project and major-mode.
+  </p>
+
+  <p>
+  I write a <a href="https://github.com/yqrashawn/awesome-tab">patch</a> for the package to add function to jump to specifc tab recently. So that user can jump to specific tabs with different shortcuts.
+  </p>
+
+  <p>
+  I also write a <a href="https://github.com/company-mode/company-mode/pull/859">patch</a> for <a href="https://github.com/company-mode/company-mode">company-mode</a> to customize the company candidate numbers when <code>company-show-numbers</code> is set to t.
+  </p>
+
+  <p>
+  Now I can use the home row the way I want in emacs. Check the screenshot below.
+  </p>
+
+
+  <figure id="orgd80dc3a">
+  <img src="../content/2019/01/15/emacs-home-row.png" alt="emacs-home-row.png">
+
+  </figure>
+
+  <p>
+  As you can see in the picture, instead of numbers, there're "asdf" for both tabs and completion candidates. Next step is to switch/select tabs/candidates with home row shortcuts.
+  </p>
+
+  <div class="org-src-container">
+  <pre class="src src-clojure">{:des "Emacs m/v select company candidates"
+  :rules [:emacs-m-mode
+  [:a [:!Tx :!T6 :1]]
+  [:s [:!Tx :!T6 :2]]
+  [:d [:!Tx :!T6 :3]]
+  [:f [:!Tx :!T6 :4]]
+  [:g [:!Tx :!T6 :5]]
+  :emacs-v-mode
+  [:h [:!Tx :!T6 :6]]
+  [:j [:!Tx :!T6 :7]]
+  [:k [:!Tx :!T6 :8]]
+  [:l [:!Tx :!T6 :9]]
+  [:semicolon [:!Tx :!T6 :0]]]}
+  </pre>
+  </div>
+
+  <p>
+  Above code uses <a href="https://github.com/yqrashawn/GokuRakuJoudo">goku</a> and <a href="https://github.com/tekezo/Karabiner-Elements">karabiner</a> to map <code>m+asdfg</code> and <code>v+hjkl;</code> to <code>C-x C-6 1234567890</code>. That's <code>'m' key down then click 'a'</code> to <code>C-x C-6 1</code> in emacs. Then I map <code>C-x C-6</code> + numbers to functions that switch/select tabs/candidates in emacs.
+  </p>
+
+  <div class="org-src-container">
+  <pre class="src src-elisp"><span class="org-comment-delimiter">;; </span><span class="org-comment">jump to specific in emacs</span>
+  (define-key awesome-tab-mode-map (kbd <span class="org-string">"C-x C-6 1"</span>) (<span class="org-keyword">lambda</span> () (<span class="org-keyword">interactive</span>) (awesome-tab-jump ?a)))
+  (define-key awesome-tab-mode-map (kbd <span class="org-string">"C-x C-6 2"</span>) (<span class="org-keyword">lambda</span> () (<span class="org-keyword">interactive</span>) (awesome-tab-jump ?s)))
+  (define-key awesome-tab-mode-map (kbd <span class="org-string">"C-x C-6 3"</span>) (<span class="org-keyword">lambda</span> () (<span class="org-keyword">interactive</span>) (awesome-tab-jump ?d)))
+
+  <span class="org-comment-delimiter">;; </span><span class="org-comment">select specific candidates in company-active-map</span>
+  (define-key company-active-map (kbd <span class="org-string">"C-x C-6 1"</span>) (kbd <span class="org-string">"M-1"</span>))
+  (define-key company-active-map (kbd <span class="org-string">"C-x C-6 2"</span>) (kbd <span class="org-string">"M-2"</span>))
+  (define-key company-active-map (kbd <span class="org-string">"C-x C-6 3"</span>) (kbd <span class="org-string">"M-3"</span>))
+  </pre>
+  </div>
+
+  <p>
+  We can use magic now!
+  </p>
+
+  <p>
+  'ma' switch to first tab. 'mg' select 5th candidates when completing stuff.
+  </p>
+
+  <p>
+  You can find above code in my <a href="https://github.com/yqrashawn/yqdotfiles/blob/master/.config/karabiner.edn">goku config</a> and <a href="https://github.com/yqrashawn/.emacs.d">.emacs.d</a>.
+  </p>
+  ]]></description>
+</item>
+<item>
+  <title>file:/home/runner/work/blog/blog/posts/switch-things-faster.org</title>
+  <link>https://yqrashawn.com/switch-things-faster.html</link>
+  <author> (yqrashawn)</author>
+  <guid isPermaLink="false">https://yqrashawn.com/switch-things-faster.html</guid>
+  <pubDate>Wed, 03 Oct 2018 00:00:00 +0000</pubDate>
+
+  <description><![CDATA[<p>
+  Talking about buffer switching in emacs in the <a href="http://yqrashawn.com/2018/09/26/switch-buffer-in-emacs/">last post</a> , I said that I have keybindings to switch between the two and three most recent used buffers. And the author of the <a href="https://www.reddit.com/r/emacs/comments/9hmh8n/whats_your_preferred_method_of_switching_buffers/">reddit post</a> chose to use <a href="https://github.com/killdash9/buffer-flip.el">buffer-flip</a> package.
+  </p>
+
+  <p>
+  The buffer-flip package makes switching buffer like those switching applications behavior in operating system, like <code>alt-tab</code> in MS Windows and <code>command-tab</code> in macOS. VScode also can switch among opened files with <code>control-tab</code>. The problem of these methods are obvious. They can only switching in a specific order and they all bind to these uncomfortable keys.
+  </p>
+
+  <p>
+  For me there're two solutions.
+  </p>
+
+  <p>
+  Search + shortcuts for recent visited item
+  I already talk about the first solution, switching with packages like <code>ivy</code> or <code>helm</code>, or <code>alfred</code> or <code>contexts</code> on macOS, which you can switching by searching. Plus two shortcuts switching between the most recent two and three item, so that we don't need to press too much to just switch to prev item.
+  </p>
+
+  <p>
+  home-row shortcuts + smart trigger
+  There's another solution. It's very similar to editing text in emacs. When I want to change a word in current line, I got to move my cursor to that word. If the word is in the beginning or end of this line, I use <code>C-a</code> or <code>C-e</code> then maybe <code>C-f</code>, <code>C-b</code> to move to that word (I actually use evil keybindings). If it's in the middle of the line, I use <code>isearch</code>, <code>swiper</code> or <code>evil-fine-char</code> to that word.
+  </p>
+
+  <p>
+  It's the same when we switch buffer. Check the code first.
+  </p>
+
+  <div class="org-src-container">
+  <pre class="src src-elisp"><span class="org-comment-delimiter">;; </span><span class="org-comment">smart trigger function, if not in minibuffer, trigger ivy</span>
+  <span class="org-comment-delimiter">;; </span><span class="org-comment">if in minibuffer, do ivy actions</span>
+  <span class="org-comment-delimiter">;; </span><span class="org-comment">(there must be better way to identify if we are in ivy-switch-buffer context)</span>
+  (<span class="org-keyword">defun</span> <span class="org-function-name">+ivy-switch-buffer-next-line</span> ()
+  (<span class="org-keyword">interactive</span>)
+  (<span class="org-keyword">if</span> (minibufferp) (ivy-next-line)
+  (ivy-switch-buffer)))
+
+  (<span class="org-keyword">defun</span> <span class="org-function-name">+ivy-switch-buffer-prevouse-line</span> ()
+  (<span class="org-keyword">interactive</span>)
+  (<span class="org-keyword">if</span> (minibufferp) (ivy-previous-line)
+  (ivy-switch-buffer)))
+
+  <span class="org-comment-delimiter">;; </span><span class="org-comment">then we bind them to some key</span>
+  (global-set-key (kbd <span class="org-string">"C-x C-9 l"</span>) #'ivy-alt-done)
+  (global-set-key (kbd <span class="org-string">"C-x C-9 j"</span>) '+ivy-switch-buffer-next-line)
+  (global-set-key (kbd <span class="org-string">"C-x C-9 k"</span>) '+ivy-switch-buffer-prevouse-line)
+  (global-set-key (kbd <span class="org-string">"C-x C-9 a"</span> ) #'ivy-beginning-of-buffer)
+  (global-set-key (kbd <span class="org-string">"C-x C-9 e"</span> ) #'ivy-end-of-buffer)
+  (global-set-key (kbd <span class="org-string">"C-x C-9 u"</span> ) #'ivy-scroll-down-command)
+  (global-set-key (kbd <span class="org-string">"C-x C-9 d"</span> ) #'ivy-scroll-up-command)
+  </pre>
+  </div>
+
+  <p>
+  So this is unusable for now. Cause the keybindings are too hard and slow to reach. That's why we don't do these kind of configuration. We don't have enough key for this.
+  </p>
+
+  <p>
+  But what if we can make any key a modifier key like <code>control</code>, <code>alt</code> or <code>command</code>. There's <a href="https://pqrs.org/osx/karabiner/">karabiner</a> on macOS can make this happen. And I think this is doable on other operating systems as well.
+  </p>
+
+  <div class="org-src-container">
+  <pre class="src src-clojure">{:applications {:Emacs ["^org\\.gnu\\.Emacs$"]} ;; let karabiner know which app is emacs
+  :simlayer {:emacs-s-mode {:key :s :condi :Emacs}} ;; use s as modifer key only in emacs
+  :mains [{:des "s-mode in emacs"
+  :rules [:emacs-s-mode ;; bellow rebinds only works under :emacs-s-mode condition
+  [:j [:!Tx :!T9 :j]] ;; ivy-next-line or ivy-switch-buffer
+  [:k [:!Tx :!T9 :k]] ;; prev line
+  [:l [:!Tx :!T9 :l]] ;; ivy-alt-done
+  [:i [:!Tx :!T9 :a]] ;; top of ivy buffer
+  [:o [:!Tx :!T9 :e]] ;; bottom
+  [:o [:!Tx :!T9 :u]] ;; scroll up
+  [:o [:!Tx :!T9 :d]]]}]}
+  </pre>
+  </div>
+
+  <p>
+  I have this <code>emacs-s-mode</code> use <code>s</code> key as a modifier key mapping <code>s+jklaeud</code> to <code>C-x C-9 jklaeud</code>. So when I want to switch buffer, I can just press <code>s+j/k</code> to trigger <code>ivy-switch-buffer</code> and keep pressing either of this key to find my buffer. Or use <code>s + u or d</code> to scroll quicker, <code>s+a/e</code> to go to the top and bottom of the list and <code>s+l</code> to select the buffer. I can always release <code>s</code> key and type to search the right buffer, without fearing releasing keys may select wrong buffer (happens when switching application with <code>command+tab</code>). And it won't switch to buffers between current one and target one making emacs rendering every buffer (buffer-flip behavior).
+  </p>
+
+  <p>
+  Note that the karabiner configuration above needs <a href="https://github.com/yqrashawn/GokuRakuJoudo">GokuRakuJoudo</a> to convert to the json format that karabiner can read, you can't use it directly.
+  </p>
+
+  <p>
+  If you know how to make normal keys as modifier key in other operating system, please let me know. I'll add them to this post.
+  </p>
+  ]]></description>
+</item>
+<item>
+  <title>file:/home/runner/work/blog/blog/posts/fix-the-log-folder-permission-problem-with-homebrew-services.org</title>
+  <link>https://yqrashawn.com/fix-the-log-folder-permission-problem-with-homebrew-services.html</link>
+  <author> (yqrashawn)</author>
+  <guid isPermaLink="false">https://yqrashawn.com/fix-the-log-folder-permission-problem-with-homebrew-services.html</guid>
+  <pubDate>Sat, 29 Sep 2018 00:00:00 +0000</pubDate>
+
+  <description><![CDATA[<p>
+  Recently I'm developing this <a href="https://github.com/yqrashawn/GokuRakuJoudo">GokuRakuJoudo</a> tool to enable user config <a href="https://pqrs.org/osx/karabiner/">karabiner</a> with <a href="https://github.com/edn-format/edn">edn</a> file instead of json file.
+  </p>
+
+  <p>
+  I deploy it to the macOS package manager homebrew so that user can install it with homebrew easily. Since the tool is used to watch the edn file and transform it to json file. It's naturally to use homebrew services to run the command.
+  </p>
+
+  <p>
+  Homebrew services uses macOS's launchctl tool to read plist file and run service. The problem is launchctl create the log directory I set in the plist file with system permission, and the program don't need to run under system permission. So the service failed.
+  </p>
+
+  <hr>
+
+  <p>
+  I tried to find ways to create the directory in the brew formula file. But it seems one can't get the HOME env variable in the <code>def install</code> section of the formula. So that I can't create the <code>~/Library/Logs/goku</code> folder with user ownership. I checked other packages like redis and mongodb. But they all need to run with <code>sudo brew services start</code>.
+  </p>
+
+  <p>
+  When I was about to give up and tell user to create the folder themselves before install the package. I saw there're many other .log files under <code>~/Library/Logs</code> directory. Then I changed the log file location from <code>...Logs/goku/output.log</code> to <code>.../Logs/goku.log</code>. It works! User do have write permission to file <code>goku.log</code>. It seems that launchctl only create folders with system owner group instead of files. Wired problem. Hope this may help people encountered with the same problem.
+  </p>
+  ]]></description>
+</item>
+<item>
+  <title>file:/home/runner/work/blog/blog/posts/switch-buffer-in-emacs.org</title>
+  <link>https://yqrashawn.com/switch-buffer-in-emacs.html</link>
+  <author> (yqrashawn)</author>
+  <guid isPermaLink="false">https://yqrashawn.com/switch-buffer-in-emacs.html</guid>
+  <pubDate>Wed, 26 Sep 2018 00:00:00 +0000</pubDate>
+
+  <description><![CDATA[<p>
+  Recently there's a <a href="https://www.reddit.com/r/emacs/comments/9hmh8n/whats_your_preferred_method_of_switching_buffers/">new post</a> on r/emacs discussing about swithcing buffer in emacs. As I posted before, I have that kind of problem as well. It's just most of us use <code>ibuffer</code>, <code>helm</code> or <code>ivy</code> and we use them for a long time. Yet we still interest in these discussions. Cause maybe all of us want it to be faster or more convenient.
+  </p>
+
+  <p>
+  For me, I use <code>counsel-projectile-switch-to-buffer</code> and <code>ivy-switch-buffer</code> to switch buffer in current project or global. And I have two functions to switch between the two and three most recent buffer.
+  </p>
+
+  <hr>
+
+  <p>
+  It works well if I'm the only one working on this project, which means I name all the files and directries. But if you have this huge react project and there's a component directory with more than twenty components with their own directory and all of their entry files are named <code>index.jsx</code>. Your fingers will have a hard time.
+  </p>
+
+  <p>
+  There's no good solution for, you know, a bad decision. You can only fix it, not solve it. You can set some project local variables and functions to swtich to these <code>index.jsx</code> depends on names of their directories. Or you can get by with it. Either way takes time and won't make it much better in next project.
+  </p>
+
+  <p>
+  Anyway, our emacser will always overcome these kind of things.
+  </p>
+
+  <p>
+  I want to share a new package I found yesterday about swtiching buffer in emacs. And the post end up in complaints. My bad.
+  </p>
+
+  <p>
+  The package is <a href="https://github.com/manateelazycat/awesome-tab">awesome-tab</a>. And yes it's based on tabbar. In summary, as the readme says it's a package providing out of box configuration to use tab in emacs. It group tabs by project and hide unwanted buffers by default. The pros is you know clearly which buffer you are switching to (assumming you aren't working on a project like the above one) and you can click on it to switch buffer. It doesn't have functions like switch to nth tab. So I suppose user still need to use fuzzy search to switch buffer if there's a lot buffer in a single project.
+  </p>
+
+  <p>
+  I'll try it for several days and see if I'll keep it.
+  </p>
+  ]]></description>
+</item>
+<item>
+  <title>file:/home/runner/work/blog/blog/posts/my-karabiner-elements-configuration.org</title>
+  <link>https://yqrashawn.com/my-karabiner-elements-configuration.html</link>
+  <author> (yqrashawn)</author>
+  <guid isPermaLink="false">https://yqrashawn.com/my-karabiner-elements-configuration.html</guid>
+  <pubDate>Wed, 19 Sep 2018 00:00:00 +0000</pubDate>
+
+  <description><![CDATA[<p>
+  UPDATE 2018-09-19 Wed
+  </p>
+
+  <p>
+  My config in <a href="https://github.com/pqrs-org/KE-complex_modifications">KE-complex-modifications</a> is outdated. I'm now using <a href="https://github.com/yqrashawn/GokuRakuJoudo">GokuRakuJoudo</a> to config karabiner. It enables user to write the configuration in a much more compact karabiner.edn file, you can check out <a href="https://github.com/yqrashawn/yqdotfiles/blob/master/.config/karabiner.edn">mine</a>.  I'll write a post about it soon. If your karabiner.json is bloated, you may want to try it. Recommend to check the <a href="https://github.com/yqrashawn/GokuRakuJoudo/blob/master/Tutorial.org">tutorial</a> first.
+  </p>
+
+  <p>
+  ORIGINAL
+  </p>
+
+  <p>
+  This post are descriptions and tutorial of my <a href="https://github.com/yqrashawn/yqdotfiles/blob/master/.config/karabiner/karabiner.json">personal KE complex modification</a>.
+  </p>
+
+  <p>
+  I <a href="https://github.com/pqrs-org/KE-complex_modifications/pull/162">merged</a> my personal <a href="https://github.com/tekezo/Karabiner-Elements">Karabiner Elements</a> configuration into the <a href="https://github.com/pqrs-org/KE-complex_modifications">official repo</a> several days ago. You can import my personal rules <a href="https://pqrs-org.github.io/KE-complex_modifications/">here</a>. To achieve efficiency, I use karabiner with <a href="https://www.alfredapp.com/">Alfred</a> mainly through <a href="https://www.alfredapp.com/help/workflows/triggers/external/">alfred workflow external trigger</a> and <a href="https://developer.apple.com/legacy/library/documentation/Darwin/Reference/ManPages/man1/osascript.1.html">osascript</a> (command line tool for calling AppleScript code).
+  </p>
+
+  <p>
+  Here are these configurations. Please note that I update my configurations every day. So I  can't keep this post up to date. The key here is to introduce a system for launching apps, invoking scripts and all stuffs that can be done with shell (everything). When you can get anything you want with few key strokes, <b>it feels great</b>.
+  </p>
+
+  <p>
+  <del><a href="https://www.dropbox.com/s/qepdfdu0djyed7v/workflows.zip?dl=0">Download all my workflow from dropbox </a>, please contact <a href="https://github.com/yqrashawn">me</a> when this link broken.</del> I may update this post for each specific config if I have time in the future (may not happen). If you have any problems or ideas, please <a href="https://github.com/yqrashawn/yqdotfiles/issues/new">open an issue</a> in my dotfile repo. And you can also check <a href="https://github.com/pqrs-org/KE-complex_modifications">KE-complex_modifications</a> official repo for more rules and discussion.
+  </p>
+
+  <p>
+  Update: The old download link is broken and I don't have time to maintain all these workflows up to date. Now that the core thing here is to use alfred workflow's external trigger feature, I create a <a href="https://github.com/yqrashawn/alfred-launcher-workflow">app launcher workflow</a> as a sample.
+  </p>
+  ]]></description>
+</item>
+<item>
+  <title>file:/home/runner/work/blog/blog/posts/record-org-mode-recent-activity.org</title>
+  <link>https://yqrashawn.com/record-org-mode-recent-activity.html</link>
+  <author> (yqrashawn)</author>
+  <guid isPermaLink="false">https://yqrashawn.com/record-org-mode-recent-activity.html</guid>
+  <pubDate>Mon, 17 Sep 2018 00:00:00 +0000</pubDate>
+
+  <description><![CDATA[<p>
+  So I checked the <a href="https://www.notion.so/">notion</a> tool recently. It's pretty good if everyone around use it. But as an emacs user, I still prefer org-mode.
+  </p>
+
+  <p>
+  It's just there's one functionality I never thought about when I was using org-mode, the ability to record your activity. Like when you reschedule somthing or change the state of tasks.
+  </p>
+
+  <hr>
+
+  <p>
+  I did some search online and came up with a solution. I'm pretty sure there's better ways to do so. I'll just put the codes here. It leverages the <code>org-agenda-custom-commands</code> and the <code>:LOGBOOK:</code> feature. And the code is mainly from <a href="https://stackoverflow.com/questions/8039416/custom-searches-using-timestamps-in-logbook-in-org-mode">here</a> with some modification.
+  </p>
+
+  <div class="org-src-container">
+  <pre class="src src-elisp"><span class="org-comment-delimiter">;; </span><span class="org-comment">enable the log feature</span>
+  (<span class="org-keyword">setq</span> org-log-into-drawer t)
+  (<span class="org-keyword">setq</span> org-log-reschedule 'time)
+  (<span class="org-keyword">setq</span> org-log-redeadline 'note)
+  (<span class="org-keyword">setq</span> org-log-note-clock-out t)
+
+  <span class="org-comment-delimiter">;; </span><span class="org-comment">add T: before timestamp for easy regex search</span>
+  (<span class="org-keyword">setq</span> org-log-note-headings '((done . <span class="org-string">"CLOSING NOTE T:%t"</span>)
+  (state . <span class="org-string">"State %-12s from %-12S T:%t"</span>)
+  (note . <span class="org-string">"Note taken on T:%t"</span>)
+  (reschedule . <span class="org-string">"Rescheduled from %S on T:%t"</span>)
+  (delschedule . <span class="org-string">"Not scheduled, was %S on T:%t"</span>)
+  (redeadline . <span class="org-string">"New deadline from %S on T:%t"</span>)
+  (deldeadline . <span class="org-string">"Removed deadline, was %S on T:%t"</span>)
+  (refile . <span class="org-string">"Refiled on T:%t"</span>)
+  (clock-out . <span class="org-string">"Clocked out on T:%t"</span>)))
+
+  (<span class="org-keyword">defun</span> <span class="org-function-name">+org/find-state</span> (<span class="org-type">&amp;optional</span> end)
+  <span class="org-doc">"Used to search through the logbook of subtrees.</span>
+
+  <span class="org-doc">    Looking for T:[2018-09-14 Fri 10:50] kind of time stamp in logbook."</span>
+  (<span class="org-keyword">let*</span> ((closed (re-search-forward <span class="org-string">"^CLOSED: \\["</span> end t))
+  (created (<span class="org-keyword">if</span> (not closed) (re-search-forward <span class="org-string">"^:CREATED: \\["</span> end t)))
+  (logbook (<span class="org-keyword">if</span> (not closed) (re-search-forward <span class="org-string">".*T:\\["</span> end t)))
+  (result (<span class="org-keyword">or</span> closed logbook created)))
+  result))
+
+  (<span class="org-keyword">defun</span> <span class="org-function-name">+org/date-diff</span> (start end <span class="org-type">&amp;optional</span> compare)
+  <span class="org-doc">"Calculate difference between  selected timestamp to current date.</span>
+
+  <span class="org-doc">  The difference between the dates is calculated in days.</span>
+  <span class="org-doc">  START and END define the region within which the timestamp is found.</span>
+  <span class="org-doc">  Optional argument COMPARE allows for comparison to a specific date rather than to current date."</span>
+  (<span class="org-keyword">let*</span> ((start-date (<span class="org-keyword">if</span> compare compare (calendar-current-date))))
+  (- (calendar-absolute-from-gregorian start-date) (org-time-string-to-absolute (buffer-substring-no-properties start end)))))
+
+  (<span class="org-keyword">defun</span> <span class="org-function-name">+org/last-update-before</span> (since)
+  <span class="org-doc">"List Agenda items that updated before SINCE day."</span>
+  (<span class="org-keyword">let</span> ((next-headline (<span class="org-keyword">save-excursion</span> (<span class="org-keyword">or</span> (outline-next-heading) (point-max)))))
+  (<span class="org-keyword">let*</span> ((subtree-end (<span class="org-keyword">save-excursion</span> (org-end-of-subtree t)))
+  (subtree-valid (<span class="org-keyword">save-excursion</span>
+  (forward-line 1)
+  (<span class="org-keyword">if</span> (<span class="org-keyword">and</span> (&lt; (point) subtree-end)
+  <span class="org-comment-delimiter">;; </span><span class="org-comment">Find the timestamp to test</span>
+  (+org/find-state subtree-end))
+  (<span class="org-keyword">let</span> ((startpoint (point)))
+  (forward-word 3)
+  <span class="org-comment-delimiter">;; </span><span class="org-comment">Convert timestamp into days difference from today</span>
+  (+org/date-diff startpoint (point)))
+  (point-max)))))
+  (<span class="org-keyword">if</span> (<span class="org-keyword">and</span> subtree-valid (&gt;= subtree-valid since))
+  next-headline
+  nil))))
+
+  (<span class="org-keyword">defun</span> <span class="org-function-name">+org/has-child-and-last-update-before</span> (day)
+  (<span class="org-keyword">if</span> (+org/has-child-p) (point)
+  (+org/last-update-before day)))
+  </pre>
+  </div>
+
+  <p>
+  So now we can use the <code>+org/last-update-before</code> or <code>+org/has-child-and-last-update-before</code> function in <code>org-agenda-custom-commands</code> to filter activities updated since <code>SINCE</code> days ago. Like this.
+  </p>
+
+  <div class="org-src-container">
+  <pre class="src src-elisp">(<span class="org-keyword">setq</span> org-agenda-custom-commands
+  '((<span class="org-string">"R"</span> <span class="org-string">"Recent activity"</span>
+  ((tags <span class="org-string">"*"</span>
+  ((org-agenda-overriding-header <span class="org-string">"Recent Activity"</span>)
+  (org-agenda-skip-function '(+org/has-child-and-last-update-before 7)))))
+  nil nil)))
+  </pre>
+  </div>
+
+  <p>
+  The code will only search for timestamps in ":LOGBOOK:" prefexd with <code>T:</code> or <code>:CREATED:</code> or <code>:CLOSED</code> timestamps. It works fine and helps me sometimes. Maybe I should write a agenda sort function to let them ordered by changed time. Fine for me right now.
+  </p>
+
+  <p>
+  UPDATE: 2018-09-24
+  If anyone intrested in automatically recoding changes of headings, you may want check <a href="https://emacs.stackexchange.com/questions/39348/org-auto-add-update-date-of-last-modification-of-heading-and-or-its-body-to#">this</a> stackoverflow question. The answer gives a method using hash to record last modification time of any changes in headings or even bodys.
+  </p>
+  ]]></description>
+</item>
+<item>
+  <title>file:/home/runner/work/blog/blog/posts/after-trying-persp-mode.org</title>
+  <link>https://yqrashawn.com/after-trying-persp-mode.html</link>
+  <author> (yqrashawn)</author>
+  <guid isPermaLink="false">https://yqrashawn.com/after-trying-persp-mode.html</guid>
+  <pubDate>Sat, 11 Aug 2018 00:00:00 +0000</pubDate>
+
+  <description><![CDATA[<p>
+  After <a href="https://yqrashawn.com/2018/08/07/emacs-workspace-management/">last post about trying emacs workspace management</a>, I tried <code>persp-mode</code>. It comes out that it's not that simple to implement a workspace auto-switch feature. It's not just <code>find-file-hook</code> and advice for <code>switch-buffer</code>. There are too many commands need to advice and hook (<code>select-window</code>, <code>kill-buffer-hook</code> ...). Cause there's no "buffer-focus-in-hook". And it's not easy to build one with <code>persp-mode</code>.
+  </p>
+
+  <p>
+  There is one package in melpa that implement per buffer <code>buffer-focus-in-hook</code> and <code>buffer-focus-out-hook</code> by hacking on <code>buffer-list-update-hook</code>. But <code>persp-mode</code> also manipulate the <code>buffer-list</code>. It won't work out.
+  </p>
+
+  <p>
+  Then I realize that I just want to have workspace on buffer management, like the <code>ibuffer</code> option above. I can easily get that feature. I just rebind my buffer-switch key to <code>counsel-projectile-switch-to-buffer</code> and everything works great.
+  </p>
+
+  <p>
+  It turns out that compared with projectile, persp only offers workspace specific window configuration. So I don't need it if I only want buffer level workspace. And it also add unexpacted behavior when I test my auto-switch implementation (buffer and window configuration switched at the same time), which makes me wonder that workspace auto-switch is a bad idea.
+  </p>
+
+  <p>
+  Although it looks like that I waste bunch of time to find a single rebind. I do find lots useful stuff on these workspace, layout, window management packages and implementations. I might write another post for about that.
+  </p>
+  ]]></description>
+</item>
+<item>
+  <title>file:/home/runner/work/blog/blog/posts/emacs-workspace-management.org</title>
+  <link>https://yqrashawn.com/emacs-workspace-management.html</link>
+  <author> (yqrashawn)</author>
+  <guid isPermaLink="false">https://yqrashawn.com/emacs-workspace-management.html</guid>
+  <pubDate>Tue, 07 Aug 2018 00:00:00 +0000</pubDate>
+
+  <description><![CDATA[<p>
+  Recently I'm asked to help on a project. The problem is there're a lot files with same name in different directories and same name with my other project. I'm using <code>ivy-switch-buffer</code> to switch between opened buffer. And it needs more keystrokes in this project to switch to the desired buffer. So I'm looking for some workspace management aproch in emacs to make my finger not that tired after work.
+  </p>
+
+  <p>
+  After googling for a little while, I find there are so many ways to manage workspace in emacs.
+  use session: <a href="https://www.emacswiki.org/emacs/Desktop#toc6">use desktop and bookmark+</a>
+  use multiple emacs instance
+  <code>persp-mode</code>
+  <code>purpose-mode</code> <code>frame-purpose-mode</code>
+  also there's <code>ibuffer</code> with <code>ibuffer-vc</code> or <code>ibuffer-projectile</code>
+  even <code>tabbar</code> with custom filter functions
+  </p>
+  ]]></description>
+</item>
+</channel>
+</rss>

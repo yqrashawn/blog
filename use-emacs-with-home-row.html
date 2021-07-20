@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2021-07-20 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Use Emacs With Home Row</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="yqrashawn">
+<link rel="icon" type="image/x-icon" href="https://yqrashawn.com/favicon.ico">
+<link rel="alternate" type="application/rss+xml" href="rss.xml" title="RSS feed">
+<meta property="og:title" content="Use Emacs With Home Row">
+<meta property="og:url" content="https://yqrashawn.com/use-emacs-with-home-row.html">
+
+<meta property="og:type" content="article">
+<meta property="article:author" content="yqrashawn">
+<meta property="article:published_time" content="2019-01-15T11:54:00+0000">
+<meta property="twitter:title" content="Use Emacs With Home Row">
+<meta property="twitter:url" content="https://yqrashawn.com/use-emacs-with-home-row.html">
+<meta property="twitter:image" content="https://yqrashawn.com/">
+<link rel="stylesheet" href="css/style.css" type="text/css">
+</head>
+<body>
+<header id="top" class="status">
+<section>
+  <h1><a href="/" title="infin">infin</a></h1>
+  <h2><a href="https://github.com/yqrashawn" title="github:yqrashawn" target="_blank" rel="noreferrer noopener">github:yqrashawn</a></h2>
+</section>
+</header>
+<main id="content">
+<header>
+<h1 class="title">Use Emacs With Home Row</h1>
+<p class="subtitle">posted on 2019-01-15</p>
+</header><p>
+After writing about <a href="http://yqrashawn.com/2018/09/26/switch-buffer-in-emacs/">switching buffers in emacs</a> last year. I keep looking for the way to switch buffer quicker and more comfortably. I mentioned the package <a href="https://github.com/manateelazycat/awesome-tab">awesome-tab</a> in that post and I&rsquo;m still using it.
+</p>
+
+<p>
+The package shows buffers as tabs in emacs <a href="http://www.gnu.org/s/emacs/manual/html_node/elisp/Header-Lines.html">header line</a>, and provides functions to switch to next/prev, first/last tab. It also groups buffers depends on project and major-mode.
+</p>
+
+<p>
+I write a <a href="https://github.com/yqrashawn/awesome-tab">patch</a> for the package to add function to jump to specifc tab recently. So that user can jump to specific tabs with different shortcuts.
+</p>
+
+<p>
+I also write a <a href="https://github.com/company-mode/company-mode/pull/859">patch</a> for <a href="https://github.com/company-mode/company-mode">company-mode</a> to customize the company candidate numbers when <code>company-show-numbers</code> is set to t.
+</p>
+
+<p>
+Now I can use the home row the way I want in emacs. Check the screenshot below.
+</p>
+
+
+<figure id="orge776e6b">
+<img src="../content/2019/01/15/emacs-home-row.png" alt="use emacs with home row image" align="center" width="800">
+
+</figure>
+
+<p>
+As you can see in the picture, instead of numbers, there&rsquo;re &ldquo;asdf&rdquo; for both tabs and completion candidates. Next step is to switch/select tabs/candidates with home row shortcuts.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-clojure">{:des "Emacs m/v select company candidates"
+ :rules [:emacs-m-mode
+	 [:a [:!Tx :!T6 :1]]
+	 [:s [:!Tx :!T6 :2]]
+	 [:d [:!Tx :!T6 :3]]
+	 [:f [:!Tx :!T6 :4]]
+	 [:g [:!Tx :!T6 :5]]
+	 :emacs-v-mode
+	 [:h [:!Tx :!T6 :6]]
+	 [:j [:!Tx :!T6 :7]]
+	 [:k [:!Tx :!T6 :8]]
+	 [:l [:!Tx :!T6 :9]]
+	 [:semicolon [:!Tx :!T6 :0]]]}
+</pre>
+</div>
+
+<p>
+Above code uses <a href="https://github.com/yqrashawn/GokuRakuJoudo">goku</a> and <a href="https://github.com/tekezo/Karabiner-Elements">karabiner</a> to map <code>m+asdfg</code> and <code>v+hjkl;</code> to <code>C-x C-6 1234567890</code>. That&rsquo;s <code>'m' key down then click 'a'</code> to <code>C-x C-6 1</code> in emacs. Then I map <code>C-x C-6</code> + numbers to functions that switch/select tabs/candidates in emacs.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-elisp"><span class="org-comment-delimiter">;; </span><span class="org-comment">jump to specific in emacs</span>
+(define-key awesome-tab-mode-map (kbd <span class="org-string">"C-x C-6 1"</span>) (<span class="org-keyword">lambda</span> () (<span class="org-keyword">interactive</span>) (awesome-tab-jump ?a)))
+(define-key awesome-tab-mode-map (kbd <span class="org-string">"C-x C-6 2"</span>) (<span class="org-keyword">lambda</span> () (<span class="org-keyword">interactive</span>) (awesome-tab-jump ?s)))
+(define-key awesome-tab-mode-map (kbd <span class="org-string">"C-x C-6 3"</span>) (<span class="org-keyword">lambda</span> () (<span class="org-keyword">interactive</span>) (awesome-tab-jump ?d)))
+
+<span class="org-comment-delimiter">;; </span><span class="org-comment">select specific candidates in company-active-map</span>
+(define-key company-active-map (kbd <span class="org-string">"C-x C-6 1"</span>) (kbd <span class="org-string">"M-1"</span>))
+(define-key company-active-map (kbd <span class="org-string">"C-x C-6 2"</span>) (kbd <span class="org-string">"M-2"</span>))
+(define-key company-active-map (kbd <span class="org-string">"C-x C-6 3"</span>) (kbd <span class="org-string">"M-3"</span>))
+</pre>
+</div>
+
+<p>
+We can use magic now!
+</p>
+
+<p>
+&rsquo;ma&rsquo; switch to first tab. &rsquo;mg&rsquo; select 5th candidates when completing stuff.
+</p>
+
+<p>
+You can find above code in my <a href="https://github.com/yqrashawn/yqdotfiles/blob/master/.config/karabiner.edn">goku config</a> and <a href="https://github.com/yqrashawn/.emacs.d">.emacs.d</a>.
+</p>
+</main>
+<footer id="postamble" class="status">
+<section>
+  <h3>Search</h3>
+  <iframe class="search-box" src="https://duckduckgo.com/search.html?site=yqrashawn.com&prefill=search"></iframe>
+</section>
+<section>
+  <h3>Meta</h3>
+  <ul>
+    <li><a href="rss.xml">RSS feed</a></li>
+    <li><a href="https://github.com/yqrashawn/blog">View source code</a></li>
+  </ul>
+</section>
+<section>
+  <h3>About</h3>
+  <ul>
+    <li>Author: <a href="http://github.com/yqrashawn">yqrashawn</a></li>
+    <!-- <li>Twitter: <a href="http://twitter.com/yqrashawn">@yqrashawn</a></li> -->
+  </ul>
+</section>
+</footer>
+</body>
+</html>

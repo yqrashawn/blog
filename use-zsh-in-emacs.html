@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2021-07-20 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Use Zsh In Emacs</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="yqrashawn">
+<link rel="icon" type="image/x-icon" href="https://yqrashawn.com/favicon.ico">
+<link rel="alternate" type="application/rss+xml" href="rss.xml" title="RSS feed">
+<meta property="og:title" content="Use Zsh In Emacs">
+<meta property="og:url" content="https://yqrashawn.com/use-zsh-in-emacs.html">
+
+<meta property="og:type" content="article">
+<meta property="article:author" content="yqrashawn">
+<meta property="article:published_time" content="2017-11-09T21:55:00+0000">
+<meta property="twitter:title" content="Use Zsh In Emacs">
+<meta property="twitter:url" content="https://yqrashawn.com/use-zsh-in-emacs.html">
+<meta property="twitter:image" content="https://yqrashawn.com/">
+<link rel="stylesheet" href="css/style.css" type="text/css">
+</head>
+<body>
+<header id="top" class="status">
+<section>
+  <h1><a href="/" title="infin">infin</a></h1>
+  <h2><a href="https://github.com/yqrashawn" title="github:yqrashawn" target="_blank" rel="noreferrer noopener">github:yqrashawn</a></h2>
+</section>
+</header>
+<main id="content">
+<header>
+<h1 class="title">Use Zsh In Emacs</h1>
+<p class="subtitle">posted on 2017-11-09</p>
+</header><p>
+I used to use vim with tmux in a terminal emulator. After changing to emacs. It didn&rsquo;t take much time for me to realize that emacs in GUI works better.
+</p>
+
+<p>
+The problem is I still want the old behavior. I tried about three times using my zsh shell in emacs. I&rsquo;m not here telling those failed attempts. I want to write it down because of a recent discovery.
+</p>
+
+<p>
+When I restructure my zsh configurations, I find the z-shell works fine with with zero config. That&rsquo;s when I finally discover that it&rsquo;s the plugins and configurations that make zsh and emacs incompatible. What&rsquo;s more, I find these lines. They must come from some emacs package&rsquo;s readme instruction. The original one is telling zsh don&rsquo;t do something when it&rsquo;s in emacs.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell"><span class="org-keyword">if</span> [ -n <span class="org-string">"$INSIDE_EMACS"</span> ]; <span class="org-keyword">then</span>
+  ...
+<span class="org-keyword">else</span>
+  ...
+<span class="org-keyword">fi</span>
+</pre>
+</div>
+
+<p>
+So I thought, I can just use these line with my zsh configuration(<a href="https://github.com/sorin-ionescu/prezto">prezto</a>). It works fine now after some little test. It turns out the default <a href="https://github.com/zsh-users/zsh-completions">zsh-autocompletion</a> is not playing well with emacs. I use the <code>if...else</code> code telling zsh don&rsquo;t load autosugestion while in emacs. And everything is fine now.
+</p>
+
+<p>
+That&rsquo;s it. Maybe I&rsquo;ll dig in for getting autocompletion back in emacs someday.
+</p>
+</main>
+<footer id="postamble" class="status">
+<section>
+  <h3>Search</h3>
+  <iframe class="search-box" src="https://duckduckgo.com/search.html?site=yqrashawn.com&prefill=search"></iframe>
+</section>
+<section>
+  <h3>Meta</h3>
+  <ul>
+    <li><a href="rss.xml">RSS feed</a></li>
+    <li><a href="https://github.com/yqrashawn/blog">View source code</a></li>
+  </ul>
+</section>
+<section>
+  <h3>About</h3>
+  <ul>
+    <li>Author: <a href="http://github.com/yqrashawn">yqrashawn</a></li>
+    <!-- <li>Twitter: <a href="http://twitter.com/yqrashawn">@yqrashawn</a></li> -->
+  </ul>
+</section>
+</footer>
+</body>
+</html>

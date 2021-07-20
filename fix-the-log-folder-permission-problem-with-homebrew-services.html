@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2021-07-20 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fix The Log Folder Permission Problem With Homebrew Services</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="yqrashawn">
+<link rel="icon" type="image/x-icon" href="https://yqrashawn.com/favicon.ico">
+<link rel="alternate" type="application/rss+xml" href="rss.xml" title="RSS feed">
+<meta property="og:title" content="Fix The Log Folder Permission Problem With Homebrew Services">
+<meta property="og:url" content="https://yqrashawn.com/fix-the-log-folder-permission-problem-with-homebrew-services.html">
+
+<meta property="og:type" content="article">
+<meta property="article:author" content="yqrashawn">
+<meta property="article:published_time" content="2018-09-29T18:26:00+0000">
+<meta property="twitter:title" content="Fix The Log Folder Permission Problem With Homebrew Services">
+<meta property="twitter:url" content="https://yqrashawn.com/fix-the-log-folder-permission-problem-with-homebrew-services.html">
+<meta property="twitter:image" content="https://yqrashawn.com/">
+<link rel="stylesheet" href="css/style.css" type="text/css">
+</head>
+<body>
+<header id="top" class="status">
+<section>
+  <h1><a href="/" title="infin">infin</a></h1>
+  <h2><a href="https://github.com/yqrashawn" title="github:yqrashawn" target="_blank" rel="noreferrer noopener">github:yqrashawn</a></h2>
+</section>
+</header>
+<main id="content">
+<header>
+<h1 class="title">Fix The Log Folder Permission Problem With Homebrew Services</h1>
+<p class="subtitle">posted on 2018-09-29</p>
+</header><p>
+Recently I&rsquo;m developing this <a href="https://github.com/yqrashawn/GokuRakuJoudo">GokuRakuJoudo</a> tool to enable user config <a href="https://pqrs.org/osx/karabiner/">karabiner</a> with <a href="https://github.com/edn-format/edn">edn</a> file instead of json file.
+</p>
+
+<p>
+I deploy it to the macOS package manager homebrew so that user can install it with homebrew easily. Since the tool is used to watch the edn file and transform it to json file. It&rsquo;s naturally to use homebrew services to run the command.
+</p>
+
+<p>
+Homebrew services uses macOS&rsquo;s launchctl tool to read plist file and run service. The problem is launchctl create the log directory I set in the plist file with system permission, and the program don&rsquo;t need to run under system permission. So the service failed.
+</p>
+
+<hr>
+
+<p>
+I tried to find ways to create the directory in the brew formula file. But it seems one can&rsquo;t get the HOME env variable in the <code>def install</code> section of the formula. So that I can&rsquo;t create the <code>~/Library/Logs/goku</code> folder with user ownership. I checked other packages like redis and mongodb. But they all need to run with <code>sudo brew services start</code>.
+</p>
+
+<p>
+When I was about to give up and tell user to create the folder themselves before install the package. I saw there&rsquo;re many other .log files under <code>~/Library/Logs</code> directory. Then I changed the log file location from <code>...Logs/goku/output.log</code> to <code>.../Logs/goku.log</code>. It works! User do have write permission to file <code>goku.log</code>. It seems that launchctl only create folders with system owner group instead of files. Wired problem. Hope this may help people encountered with the same problem.</p>
+</main>
+<footer id="postamble" class="status">
+<section>
+  <h3>Search</h3>
+  <iframe class="search-box" src="https://duckduckgo.com/search.html?site=yqrashawn.com&prefill=search"></iframe>
+</section>
+<section>
+  <h3>Meta</h3>
+  <ul>
+    <li><a href="rss.xml">RSS feed</a></li>
+    <li><a href="https://github.com/yqrashawn/blog">View source code</a></li>
+  </ul>
+</section>
+<section>
+  <h3>About</h3>
+  <ul>
+    <li>Author: <a href="http://github.com/yqrashawn">yqrashawn</a></li>
+    <!-- <li>Twitter: <a href="http://twitter.com/yqrashawn">@yqrashawn</a></li> -->
+  </ul>
+</section>
+</footer>
+</body>
+</html>

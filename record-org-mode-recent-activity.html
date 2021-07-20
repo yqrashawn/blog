@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2021-07-20 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Record Org-Mode Recent Activity</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="yqrashawn">
+<link rel="icon" type="image/x-icon" href="https://yqrashawn.com/favicon.ico">
+<link rel="alternate" type="application/rss+xml" href="rss.xml" title="RSS feed">
+<meta property="og:title" content="Record Org-Mode Recent Activity">
+<meta property="og:url" content="https://yqrashawn.com/record-org-mode-recent-activity.html">
+
+<meta property="og:type" content="article">
+<meta property="article:author" content="yqrashawn">
+<meta property="article:published_time" content="2018-09-17T22:25:00+0000">
+<meta property="twitter:title" content="Record Org-Mode Recent Activity">
+<meta property="twitter:url" content="https://yqrashawn.com/record-org-mode-recent-activity.html">
+<meta property="twitter:image" content="https://yqrashawn.com/">
+<link rel="stylesheet" href="css/style.css" type="text/css">
+</head>
+<body>
+<header id="top" class="status">
+<section>
+  <h1><a href="/" title="infin">infin</a></h1>
+  <h2><a href="https://github.com/yqrashawn" title="github:yqrashawn" target="_blank" rel="noreferrer noopener">github:yqrashawn</a></h2>
+</section>
+</header>
+<main id="content">
+<header>
+<h1 class="title">Record Org-Mode Recent Activity</h1>
+<p class="subtitle">posted on 2018-09-17</p>
+</header><p>
+So I checked the <a href="https://www.notion.so/">notion</a> tool recently. It&rsquo;s pretty good if everyone around use it. But as an emacs user, I still prefer org-mode.
+</p>
+
+<p>
+It&rsquo;s just there&rsquo;s one functionality I never thought about when I was using org-mode, the ability to record your activity. Like when you reschedule somthing or change the state of tasks.
+</p>
+
+<hr>
+
+<p>
+I did some search online and came up with a solution. I&rsquo;m pretty sure there&rsquo;s better ways to do so. I&rsquo;ll just put the codes here. It leverages the <code>org-agenda-custom-commands</code> and the <code>:LOGBOOK:</code> feature. And the code is mainly from <a href="https://stackoverflow.com/questions/8039416/custom-searches-using-timestamps-in-logbook-in-org-mode">here</a> with some modification.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-elisp"><span class="org-comment-delimiter">;; </span><span class="org-comment">enable the log feature</span>
+(<span class="org-keyword">setq</span> org-log-into-drawer t)
+(<span class="org-keyword">setq</span> org-log-reschedule 'time)
+(<span class="org-keyword">setq</span> org-log-redeadline 'note)
+(<span class="org-keyword">setq</span> org-log-note-clock-out t)
+
+<span class="org-comment-delimiter">;; </span><span class="org-comment">add T: before timestamp for easy regex search</span>
+(<span class="org-keyword">setq</span> org-log-note-headings '((done . <span class="org-string">"CLOSING NOTE T:%t"</span>)
+                              (state . <span class="org-string">"State %-12s from %-12S T:%t"</span>)
+                              (note . <span class="org-string">"Note taken on T:%t"</span>)
+                              (reschedule . <span class="org-string">"Rescheduled from %S on T:%t"</span>)
+                              (delschedule . <span class="org-string">"Not scheduled, was %S on T:%t"</span>)
+                              (redeadline . <span class="org-string">"New deadline from %S on T:%t"</span>)
+                              (deldeadline . <span class="org-string">"Removed deadline, was %S on T:%t"</span>)
+                              (refile . <span class="org-string">"Refiled on T:%t"</span>)
+                              (clock-out . <span class="org-string">"Clocked out on T:%t"</span>)))
+
+(<span class="org-keyword">defun</span> <span class="org-function-name">+org/find-state</span> (<span class="org-type">&amp;optional</span> end)
+  <span class="org-doc">"Used to search through the logbook of subtrees.</span>
+
+<span class="org-doc">    Looking for T:[2018-09-14 Fri 10:50] kind of time stamp in logbook."</span>
+  (<span class="org-keyword">let*</span> ((closed (re-search-forward <span class="org-string">"^CLOSED: \\["</span> end t))
+         (created (<span class="org-keyword">if</span> (not closed) (re-search-forward <span class="org-string">"^:CREATED: \\["</span> end t)))
+         (logbook (<span class="org-keyword">if</span> (not closed) (re-search-forward <span class="org-string">".*T:\\["</span> end t)))
+         (result (<span class="org-keyword">or</span> closed logbook created)))
+    result))
+
+(<span class="org-keyword">defun</span> <span class="org-function-name">+org/date-diff</span> (start end <span class="org-type">&amp;optional</span> compare)
+  <span class="org-doc">"Calculate difference between  selected timestamp to current date.</span>
+
+<span class="org-doc">  The difference between the dates is calculated in days.</span>
+<span class="org-doc">  START and END define the region within which the timestamp is found.</span>
+<span class="org-doc">  Optional argument COMPARE allows for comparison to a specific date rather than to current date."</span>
+  (<span class="org-keyword">let*</span> ((start-date (<span class="org-keyword">if</span> compare compare (calendar-current-date))))
+    (- (calendar-absolute-from-gregorian start-date) (org-time-string-to-absolute (buffer-substring-no-properties start end)))))
+
+(<span class="org-keyword">defun</span> <span class="org-function-name">+org/last-update-before</span> (since)
+  <span class="org-doc">"List Agenda items that updated before SINCE day."</span>
+  (<span class="org-keyword">let</span> ((next-headline (<span class="org-keyword">save-excursion</span> (<span class="org-keyword">or</span> (outline-next-heading) (point-max)))))
+    (<span class="org-keyword">let*</span> ((subtree-end (<span class="org-keyword">save-excursion</span> (org-end-of-subtree t)))
+           (subtree-valid (<span class="org-keyword">save-excursion</span>
+                            (forward-line 1)
+                            (<span class="org-keyword">if</span> (<span class="org-keyword">and</span> (&lt; (point) subtree-end)
+                                     <span class="org-comment-delimiter">;; </span><span class="org-comment">Find the timestamp to test</span>
+                                     (+org/find-state subtree-end))
+                                (<span class="org-keyword">let</span> ((startpoint (point)))
+                                  (forward-word 3)
+                                  <span class="org-comment-delimiter">;; </span><span class="org-comment">Convert timestamp into days difference from today</span>
+                                  (+org/date-diff startpoint (point)))
+                              (point-max)))))
+      (<span class="org-keyword">if</span> (<span class="org-keyword">and</span> subtree-valid (&gt;= subtree-valid since))
+          next-headline
+        nil))))
+
+(<span class="org-keyword">defun</span> <span class="org-function-name">+org/has-child-and-last-update-before</span> (day)
+  (<span class="org-keyword">if</span> (+org/has-child-p) (point)
+    (+org/last-update-before day)))
+</pre>
+</div>
+
+<p>
+So now we can use the <code>+org/last-update-before</code> or <code>+org/has-child-and-last-update-before</code> function in <code>org-agenda-custom-commands</code> to filter activities updated since <code>SINCE</code> days ago. Like this.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-elisp">(<span class="org-keyword">setq</span> org-agenda-custom-commands
+      '((<span class="org-string">"R"</span> <span class="org-string">"Recent activity"</span>
+         ((tags <span class="org-string">"*"</span>
+                ((org-agenda-overriding-header <span class="org-string">"Recent Activity"</span>)
+                 (org-agenda-skip-function '(+org/has-child-and-last-update-before 7)))))
+         nil nil)))
+</pre>
+</div>
+
+<p>
+The code will only search for timestamps in &ldquo;:LOGBOOK:&rdquo; prefexd with <code>T:</code> or <code>:CREATED:</code> or <code>:CLOSED</code> timestamps. It works fine and helps me sometimes. Maybe I should write a agenda sort function to let them ordered by changed time. Fine for me right now.
+</p>
+
+<p>
+UPDATE: 2018-09-24
+If anyone intrested in automatically recoding changes of headings, you may want check <a href="https://emacs.stackexchange.com/questions/39348/org-auto-add-update-date-of-last-modification-of-heading-and-or-its-body-to#">this</a> stackoverflow question. The answer gives a method using hash to record last modification time of any changes in headings or even bodys.</p>
+</main>
+<footer id="postamble" class="status">
+<section>
+  <h3>Search</h3>
+  <iframe class="search-box" src="https://duckduckgo.com/search.html?site=yqrashawn.com&prefill=search"></iframe>
+</section>
+<section>
+  <h3>Meta</h3>
+  <ul>
+    <li><a href="rss.xml">RSS feed</a></li>
+    <li><a href="https://github.com/yqrashawn/blog">View source code</a></li>
+  </ul>
+</section>
+<section>
+  <h3>About</h3>
+  <ul>
+    <li>Author: <a href="http://github.com/yqrashawn">yqrashawn</a></li>
+    <!-- <li>Twitter: <a href="http://twitter.com/yqrashawn">@yqrashawn</a></li> -->
+  </ul>
+</section>
+</footer>
+</body>
+</html>

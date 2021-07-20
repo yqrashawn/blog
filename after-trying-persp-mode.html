@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2021-07-20 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>After Trying Persp Mode</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="yqrashawn">
+<link rel="icon" type="image/x-icon" href="https://yqrashawn.com/favicon.ico">
+<link rel="alternate" type="application/rss+xml" href="rss.xml" title="RSS feed">
+<meta property="og:title" content="After Trying Persp Mode">
+<meta property="og:url" content="https://yqrashawn.com/after-trying-persp-mode.html">
+
+<meta property="og:type" content="article">
+<meta property="article:author" content="yqrashawn">
+<meta property="article:published_time" content="2018-08-11T17:07:00+0000">
+<meta property="twitter:title" content="After Trying Persp Mode">
+<meta property="twitter:url" content="https://yqrashawn.com/after-trying-persp-mode.html">
+<meta property="twitter:image" content="https://yqrashawn.com/">
+<link rel="stylesheet" href="css/style.css" type="text/css">
+</head>
+<body>
+<header id="top" class="status">
+<section>
+  <h1><a href="/" title="infin">infin</a></h1>
+  <h2><a href="https://github.com/yqrashawn" title="github:yqrashawn" target="_blank" rel="noreferrer noopener">github:yqrashawn</a></h2>
+</section>
+</header>
+<main id="content">
+<header>
+<h1 class="title">After Trying Persp Mode</h1>
+<p class="subtitle">posted on 2018-08-11</p>
+</header><p>
+After <a href="https://yqrashawn.com/2018/08/07/emacs-workspace-management/">last post about trying emacs workspace management</a>, I tried <code>persp-mode</code>. It comes out that it&rsquo;s not that simple to implement a workspace auto-switch feature. It&rsquo;s not just <code>find-file-hook</code> and advice for <code>switch-buffer</code>. There are too many commands need to advice and hook (<code>select-window</code>, <code>kill-buffer-hook</code> &#x2026;). Cause there&rsquo;s no &ldquo;buffer-focus-in-hook&rdquo;. And it&rsquo;s not easy to build one with <code>persp-mode</code>.
+</p>
+
+<p>
+There is one package in melpa that implement per buffer <code>buffer-focus-in-hook</code> and <code>buffer-focus-out-hook</code> by hacking on <code>buffer-list-update-hook</code>. But <code>persp-mode</code> also manipulate the <code>buffer-list</code>. It won&rsquo;t work out.
+</p>
+
+<p>
+Then I realize that I just want to have workspace on buffer management, like the <code>ibuffer</code> option above. I can easily get that feature. I just rebind my buffer-switch key to <code>counsel-projectile-switch-to-buffer</code> and everything works great.
+</p>
+
+<p>
+It turns out that compared with projectile, persp only offers workspace specific window configuration. So I don&rsquo;t need it if I only want buffer level workspace. And it also add unexpacted behavior when I test my auto-switch implementation (buffer and window configuration switched at the same time), which makes me wonder that workspace auto-switch is a bad idea.
+</p>
+
+<p>
+Although it looks like that I waste bunch of time to find a single rebind. I do find lots useful stuff on these workspace, layout, window management packages and implementations. I might write another post for about that.</p>
+</main>
+<footer id="postamble" class="status">
+<section>
+  <h3>Search</h3>
+  <iframe class="search-box" src="https://duckduckgo.com/search.html?site=yqrashawn.com&prefill=search"></iframe>
+</section>
+<section>
+  <h3>Meta</h3>
+  <ul>
+    <li><a href="rss.xml">RSS feed</a></li>
+    <li><a href="https://github.com/yqrashawn/blog">View source code</a></li>
+  </ul>
+</section>
+<section>
+  <h3>About</h3>
+  <ul>
+    <li>Author: <a href="http://github.com/yqrashawn">yqrashawn</a></li>
+    <!-- <li>Twitter: <a href="http://twitter.com/yqrashawn">@yqrashawn</a></li> -->
+  </ul>
+</section>
+</footer>
+</body>
+</html>
