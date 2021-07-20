@@ -1,0 +1,27 @@
+name: Bulid blog with emacs
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: purcell/setup-emacs@master
+        with:
+          version: 27.2
+      - uses: actions/checkout@v2
+      - run: make publish
+      - run:  bs
+      # - name: Import GPG key
+      #   uses: crazy-max/ghaction-import-gpg@v3
+      #   with:
+      #     gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+      #     passphrase: ${{ secrets.PASSPHRASE }}
+      #     git-user-signingkey: true
+      #     git-commit-gpgsign: true
+      - name: Deploy to GitHub Pages
+        if: success()
+        uses: crazy-max/ghaction-github-pages@v2
+        with:
+          target_branch: gh-pages
+          build_dir: public
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

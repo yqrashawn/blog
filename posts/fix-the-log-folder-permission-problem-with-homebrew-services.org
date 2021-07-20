@@ -1,0 +1,17 @@
+#+TITLE: Fix The Log Folder Permission Problem With Homebrew Services
+#+DATE: [2018-09-29 Sat 18:26]
+#+ID: 2018-09-29-brew-services-log-permission-probelm
+#+CREATED:  <2018-09-29 Sat 18:02>
+#+FILETAGS: :macos:tool:
+
+Recently I'm developing this [[https://github.com/yqrashawn/GokuRakuJoudo][GokuRakuJoudo]] tool to enable user config [[https://pqrs.org/osx/karabiner/][karabiner]] with [[https://github.com/edn-format/edn][edn]] file instead of json file.
+
+I deploy it to the macOS package manager homebrew so that user can install it with homebrew easily. Since the tool is used to watch the edn file and transform it to json file. It's naturally to use homebrew services to run the command.
+
+Homebrew services uses macOS's launchctl tool to read plist file and run service. The problem is launchctl create the log directory I set in the plist file with system permission, and the program don't need to run under system permission. So the service failed.
+
+-----
+
+I tried to find ways to create the directory in the brew formula file. But it seems one can't get the HOME env variable in the ~def install~ section of the formula. So that I can't create the ~~/Library/Logs/goku~ folder with user ownership. I checked other packages like redis and mongodb. But they all need to run with ~sudo brew services start~.
+
+When I was about to give up and tell user to create the folder themselves before install the package. I saw there're many other .log files under ~~/Library/Logs~ directory. Then I changed the log file location from ~...Logs/goku/output.log~ to ~.../Logs/goku.log~. It works! User do have write permission to file ~goku.log~. It seems that launchctl only create folders with system owner group instead of files. Wired problem. Hope this may help people encountered with the same problem.

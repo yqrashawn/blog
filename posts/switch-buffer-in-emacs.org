@@ -1,0 +1,23 @@
+#+TITLE: Switch Buffer In Emacs
+#+DATE: [2018-09-26 Wed 07:59]
+#+ID: 2018-09-26-switch-buffer-in-emacs
+#+CREATED:  <2018-09-26 Wed 07:11>
+#+FILETAGS: :emacs:
+
+Recently there's a [[https://www.reddit.com/r/emacs/comments/9hmh8n/whats_your_preferred_method_of_switching_buffers/][new post]] on r/emacs discussing about swithcing buffer in emacs. As I posted before, I have that kind of problem as well. It's just most of us use ~ibuffer~, ~helm~ or ~ivy~ and we use them for a long time. Yet we still interest in these discussions. Cause maybe all of us want it to be faster or more convenient.
+
+For me, I use ~counsel-projectile-switch-to-buffer~ and ~ivy-switch-buffer~ to switch buffer in current project or global. And I have two functions to switch between the two and three most recent buffer.
+
+-----
+
+It works well if I'm the only one working on this project, which means I name all the files and directries. But if you have this huge react project and there's a component directory with more than twenty components with their own directory and all of their entry files are named ~index.jsx~. Your fingers will have a hard time.
+
+There's no good solution for, you know, a bad decision. You can only fix it, not solve it. You can set some project local variables and functions to swtich to these ~index.jsx~ depends on names of their directories. Or you can get by with it. Either way takes time and won't make it much better in next project.
+
+Anyway, our emacser will always overcome these kind of things.
+
+I want to share a new package I found yesterday about swtiching buffer in emacs. And the post end up in complaints. My bad.
+
+The package is [[https://github.com/manateelazycat/awesome-tab][awesome-tab]]. And yes it's based on tabbar. In summary, as the readme says it's a package providing out of box configuration to use tab in emacs. It group tabs by project and hide unwanted buffers by default. The pros is you know clearly which buffer you are switching to (assumming you aren't working on a project like the above one) and you can click on it to switch buffer. It doesn't have functions like switch to nth tab. So I suppose user still need to use fuzzy search to switch buffer if there's a lot buffer in a single project.
+
+I'll try it for several days and see if I'll keep it.

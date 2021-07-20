@@ -1,0 +1,17 @@
+*~
+
+# Where old import data is
+_import/
+
+# Auto generated index & rss
+posts/index.org
+posts/rss.org
+
+# Output
+public/
+.timestamps/
+
+# Let's Encrypt
+.certbot.lock
+config/
+log/
